@@ -28,12 +28,10 @@ class User:
         User.__next_id += 1
         User.__users_list.append(self)
 
-
     # переопределение метода возвращающего объект
     # без этого обЬекты возвращаются в таком виде     <__main__.User object at 0x7f82a0202f70>
     def __repr__(self):
         return f"User (id={self._id}, name={self._name}, access={self._access})"
-
 
     @classmethod
     def get_users(cls):
@@ -64,12 +62,12 @@ class User:
 class Admin(User):
     def __init__(self, name):
         super().__init__(name)
-        self._access='admin'
+        self._access = 'admin'
 
     def __repr__(self):
         return f"Admin(id={self._id}, name={self._name}, access={self._access})"
 
-    def add_user(self,name):
+    def add_user(self, name):
         user = User(name)
         print(f"Пользовватель {user} добавлен")
 
@@ -82,26 +80,30 @@ class Admin(User):
             print(f"Пользователь с именем {name} не найден.")
 
 
+# Вывод всех созданных пользователей
+def print_all_users():
+    # print(User.get_users())
+    all_users = User.get_users()
+    for user in all_users:
+        print(f'id: {user.get_id()}, name: {user.get_name()}, access: {user.get_access()} ')
+
+
 # пример использования
 
 admin = Admin("Витя")
 admin.add_user("Саша")
 admin.add_user("Паша")
 
-# Вывод всех созданных пользователей
-# print(User.get_users())
-print("Все пользователи до удаления:")
-all_users = User.get_users()
-for user in all_users:
-    print(f'id: {user.get_id()}, name: {user.get_name()}, access: {user.get_access()} ')
+print("Все созданные пользователи:")
+print_all_users()
 
 admin.remove_user("Саша")
 admin.remove_user("Костя")
 
-# Вывод всех созданных пользователей
-# print(User.get_users())
-print("Все пользователи после удаления:")
-all_users = User.get_users()
-for user in all_users:
-    print(f'id: {user.get_id()}, name: {user.get_name()}, access: {user.get_access()} ')
+print("Все пользователи после удаления Саши:")
+print_all_users()
 
+admin.add_user("Костя")
+
+print("Все пользователи после добавления Кости:")
+print_all_users()
