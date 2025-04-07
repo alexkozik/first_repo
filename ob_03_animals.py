@@ -95,6 +95,8 @@ def employee_function(employees):
 
 
 # Создание класса Zoo с использованием композиции
+# Сохранение и загрузка информации о зоопарке
+import json
 
 class Zoo:
     def __init__(self, name):
@@ -109,6 +111,27 @@ class Zoo:
     def add_employee(self, employee):
         self.employees.append(employee)
         print(f"{employee} принят в зоопарк.")
+
+    def save_to_file(self, filename):
+        with open(filename, 'w') as file:
+            json.dump({
+                'name': self.name,
+                'animals': [{'type': type(animal).__name__, 'name': animal.name, 'age': animal.age} for animal in self.animals],
+                'employees': [{'name': employee.name, 'role': employee.role} for employee in self.employees]
+            }, file)
+
+    @staticmethod
+    def load_from_file(filename):
+        with open(filename, 'r') as file:
+            data = json.load(file)
+            zoo = Zoo(data['name'])
+            for animal_data in data['animals']:
+                animal_class = globals()[animal_data['type']]
+                zoo.add_animal(animal_class(animal_data['name'], animal_data['age']))
+            for employee_data in data['employees']:
+                employee_class = globals()[employee_data['role']]
+                zoo.add_employee(employee_class(employee_data['name'], employee_data['role']))
+            return zoo
 
     def __repr__(self):
         return f"Zoo(name={self.name}, animals={self.animals}, employees={self.employees})"
@@ -137,3 +160,9 @@ animal_sound(zoo.animals)
 
 # Вывод обязанностей сотрудников
 employee_function(zoo.employees)
+
+# Сохранение и загрузка зоопарка
+zoo.save_to_file("zoo_data.json")
+loaded_zoo = Zoo.load_from_file("zoo_data.json")
+
+print(loaded_zoo)
