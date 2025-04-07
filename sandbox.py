@@ -1,69 +1,44 @@
-class User:
-    __next_id = 1
-    __users_list = []
+# композиция в примере
 
-    def __init__(self, name):
-        if any(user._name == name for user in User.__users_list):
-            raise ValueError(f"Пользователь с именем '{name}' уже существует.")
-        self._id = User.__next_id
-        self._name = name
-        self._access = 'user'
-        User.__next_id += 1
-        User.__users_list.append(self)
+class Engine():
 
-    @classmethod
-    def get_users(cls):
-        return cls.__users_list
+    def start(self):
+        print("Двигатель запущен")
 
-    @classmethod
-    def find_user_by_name(cls, name):
-        for user in cls.__users_list:
-            if user._name == name:
-                return user
-        return None
+    def stop(self):
+        print("Двигатель остановлен")
 
-    def destroy(self):
-        if self in User.__users_list:
-            User.__users_list.remove(self)
-            print(f"Пользователь {self._name} удален.")
+class Car():
 
-    def get_id(self):
-        return self._id
+    def __init__(self):
+        self.engine = Engine()
 
-    def get_name(self):
-        return self._name
+    def start(self):
+        self.engine.start()
 
-    def get_access(self):
-        return self._access
+    def stop(self):
+        self.engine.stop()
 
-    def __repr__(self):
-        return f"User(id={self._id}, name={self._name}, access={self._access})"
+my_car=Car()
+my_car.start()
+my_car.stop()
 
-class Admin(User):
-    def __init__(self, name):
-        super().__init__(name)
-        self._adm_access = 'admin'
 
-    def __repr__(self):
-        return f"Admin(id={self._id}, name={self._name}, access={self._access}, admin_access={self._adm_access})"
+# агрегация в примере
 
-    def add_user(self, name):
-        user = User(name)
-        print(f"Пользователь {user} добавлен.")
 
-    def remove_user(self, name):
-        user = self.find_user_by_name(name)
-        if user:
-            user.destroy()
-        else:
-            print(f"Пользователь с именем {name} не найден.")
+class Teacher():
+    def teach(self):
+        print('преподаватель учит')
 
-# Пример использования
-admin = Admin("Витя")
-admin.add_user("Саша")
-admin.add_user("Паша")
-admin.remove_user("Саша")
-admin.remove_user("Костя")
+class School():
 
-# Вывод всех пользователей
-print(User.get_users())
+    def __init__(self, new_teacher):
+        self.teacher = new_teacher
+
+    def start_lesson(self):
+        self.teacher.teach()
+
+my_teacher = Teacher()
+my_school = School(my_teacher)
+my_school.start_lesson()
